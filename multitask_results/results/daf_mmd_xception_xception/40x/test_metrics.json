@@ -1,0 +1,16 @@
+{
+  "binary": {
+    "accuracy": 96.39344262295081,
+    "f1_macro": 96.04945540182514,
+    "f1_weighted": 96.40490886365501,
+    "precision_weighted": 96.43653641333206,
+    "recall_weighted": 96.39344262295081
+  },
+  "multiclass": {
+    "accuracy": 50.49180327868853,
+    "f1_macro": 38.36081855136732,
+    "f1_weighted": 52.46831570402142,
+    "precision_weighted": 59.070121847741234,
+    "recall_weighted": 50.49180327868853
+  }
+}
