@@ -1,0 +1,62 @@
+# Group 1: Simple CNN Baseline - 多任务学习版本
+# 同时训练2分类（良性/恶性）和8分类（具体类别）
+
+experiment_name: "multitask_group1_cnn"
+group: "group1"
+
+# Model Configuration
+model:
+  name: "simple_cnn_multitask"
+  num_classes_binary: 2  # 二分类：Benign vs Malignant
+  num_classes_multiclass: 8  # 八分类：8个具体类别
+  use_multiclass: true  # 是否启用八分类任务
+  dropout: 0.5
+
+# Data Configuration
+data:
+  dataset_root: "/songjian/zixuan/dataset_cancer_v1"
+  # 使用40x+100x混合训练集
+  train_csv: "train_split_40x_100x_mixed.csv"
+  val_csv: "val_split_40x_100x_mixed.csv"
+  test_csv_40x: "test_split_40x.csv"
+  test_csv_100x: "test_split_100x.csv"
+  image_size: 224
+  batch_size: 32
+  num_workers: 4
+
+# Training Configuration
+training:
+  epochs: 100
+  optimizer: "adam"
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler: "cosine"
+  
+  # Loss function
+  loss: "focal_loss"  # 使用Focal Loss处理类别不平衡
+  focal_alpha: 1.0
+  focal_gamma: 2.0
+  
+  # 多任务学习权重
+  alpha_multiclass: 1.0  # 八分类任务的权重（相对于二分类）
+  
+  # Early stopping
+  early_stopping: true
+  patience: 15
+
+# Checkpoint Configuration
+checkpoint:
+  save_dir: "multitask_results/checkpoints/group1_cnn"
+  save_best_only: true
+  save_freq: 10
+
+# Results Configuration
+results:
+  save_dir: "multitask_results/results/group1_cnn"
+  save_predictions: true
+  plot_confusion_matrix: true
+  plot_training_history: true
+
+# Device Configuration
+device: "cuda"
+seed: 42

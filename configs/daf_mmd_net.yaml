@@ -1,0 +1,109 @@
+# DAF-MMD Net 配置文件
+experiment_name: "daf_mmd_net"
+group: "daf_mmd"
+
+# 随机种子
+seed: 42
+
+# 设备
+device: "cuda"
+
+# 数据配置
+data:
+  # 40X和100X图像的CSV文件路径
+  train_csv_40x: "train_split_40x.csv"
+  train_csv_100x: "train_split_100x.csv"
+  val_csv_40x: "val_split_40x.csv"
+  val_csv_100x: "val_split_100x.csv"
+  test_csv_40x: "test_split_40x.csv"
+  test_csv_100x: "test_split_100x.csv"
+  
+  # 图像尺寸
+  image_size: 224
+  
+  # 数据增强类型: "basic" 或 "enhanced"
+  transform: "enhanced"
+  
+  # 批次大小
+  batch_size: 8  # 由于是双流，内存占用较大，建议使用较小的batch size
+  
+  # 数据加载器工作线程数
+  num_workers: 4
+
+# 模型配置
+model:
+  name: "daf_mmd_net"
+  num_classes_binary: 2  # 二分类：Benign vs Malignant
+  num_classes_multiclass: 8  # 八分类：8个具体类别
+  use_multiclass: true  # 是否启用八分类任务（多任务学习）
+  
+  # 特征维度
+  feature_dim: 2048  # 40X流特征维度
+  swin_feature_dim: 1024  # 100X流特征维度
+  
+  # 注意力模块配置
+  attention_reduction: 16  # CBAM-SE压缩比例
+  
+  # Dropout比率
+  dropout: 0.5
+  
+  # 是否使用ImageNet预训练权重
+  use_pretrained: true
+
+# 训练配置
+training:
+  # 优化器
+  optimizer: "adamw"  # adamw, adam, sgd
+  
+  # 学习率
+  learning_rate: 1e-4
+  
+  # 权重衰减
+  weight_decay: 1e-4
+  
+  # 学习率调度器
+  scheduler: "cosine"  # cosine, step, plateau
+  
+  # 训练轮数
+  epochs: 100
+  
+  # 损失函数配置
+  loss: "focal_loss"
+  focal_gamma: 2.0  # Focal Loss的gamma参数
+  
+  # 是否使用类别权重
+  use_class_weights: true
+  
+  # 分类损失权重
+  lambda_1: 1.0  # 40X流分类损失权重
+  lambda_2: 1.0  # 100X流分类损失权重
+  lambda_3: 1.0  # 融合分类损失权重
+  
+  # 多任务学习权重
+  alpha_multiclass: 1.0  # 八分类任务的权重（相对于二分类）
+  
+  # MMD损失配置
+  mmd_sigma: 1.0  # 高斯核带宽参数
+  mmd_initial_weight: 0.05  # 初始MMD权重
+  mmd_final_weight: 0.5  # 最终MMD权重
+  mmd_start_ratio: 0.5  # 开始增加MMD权重的epoch比例（50%后开始增加）
+  
+  # 渐进式解冻策略
+  gradual_unfreezing: true  # 是否使用渐进式解冻
+  unfreeze_epoch: 50  # 解冻骨干网络的epoch（在总epoch的50%时解冻）
+  
+  # 早停
+  early_stopping: true
+  patience: 15  # 验证集准确率不提升的epoch数
+
+# Checkpoint配置
+checkpoint:
+  save_dir: "checkpoints/daf_mmd_net"
+  save_best_only: true  # 只保存最佳模型
+  save_freq: 10  # 每N个epoch保存一次checkpoint
+
+# 结果保存配置
+results:
+  save_dir: "results/daf_mmd_net"
+  plot_training_history: true  # 是否绘制训练历史图
+

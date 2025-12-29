@@ -1,0 +1,53 @@
+experiment_name: multitask_xception_40x_enhanced
+group: xception
+seed: 42
+device: cuda
+
+data:
+  train_csv: train_split_40x.csv
+  val_csv: val_split_40x.csv
+  test_csv_40x: test_split_40x.csv
+  test_csv_100x: test_split_100x.csv
+  dataset_root: /songjian/zixuan/dataset_cancer_v1
+  image_size: 299
+  batch_size: 16
+  num_workers: 4
+  use_enhanced_aug: true
+
+model:
+  name: timm_multitask
+  backbone: xception
+  num_classes_binary: 2
+  num_classes_multiclass: 8
+  use_multiclass: true
+  dropout: 0.6
+  pretrained: true
+  freeze_backbone_epochs: 5
+
+training:
+  loss: focal_loss
+  focal_alpha: 1.0
+  focal_gamma: 2.0
+  alpha_multiclass: 2.0
+  
+  optimizer: adamw
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  
+  scheduler: cosine
+  epochs: 100
+  warmup_epochs: 5
+  early_stopping: true
+  patience: 25
+
+checkpoint:
+  save_dir: multitask_results/checkpoints/multitask_xception_40x_enhanced
+  save_best_only: true
+  save_freq: 10
+
+results:
+  save_dir: multitask_results/results/multitask_xception_40x_enhanced
+  plot_training_history: true
+  plot_confusion_matrix: true
+  save_predictions: true
+
