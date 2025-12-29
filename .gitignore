@@ -50,15 +50,12 @@ dataset_cancer_v1/
 # val_split.csv
 # test_split.csv
 
-# Model checkpoints (Allow uploading best_model.pth if <100MB, otherwise use LFS)
-# checkpoints/
-# *.pth
-# *.pt
-# *.ckpt
-# For now, ignore all checkpoints to be safe, uncomment specific ones if you check size < 100MB
-# If you want to try uploading, comment out the next lines, but be warned about 100MB limit.
-# checkpoints/
-# *.pth
+# Model checkpoints (Ignore all model weights - too large for GitHub)
+multitask_results/checkpoints/
+checkpoints/
+*.pth
+*.pt
+*.ckpt
 
 # Results (Allow uploading results)
 # results/
